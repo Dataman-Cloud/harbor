@@ -79,7 +79,7 @@ func (n *NotificationHandler) Post() {
 				username = "anonymous"
 			}
 			//go dao.AccessLog(username, project, repo, action)
-
+			log.Println(project)
 			if action == "push" {
 				go persistPushEvent(e)
 			}
