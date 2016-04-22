@@ -20,6 +20,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/vmware/harbor/dao"
 	"github.com/vmware/harbor/models"
@@ -27,6 +28,19 @@ import (
 
 	"github.com/astaxie/beego"
 )
+
+func init() {
+	go func() {
+		ticker := time.NewTicker(time.Second * 5 * 60)
+		for _ = range ticker.C {
+			log.Println("refreshing catalog")
+			err := svc_utils.RefreshCatalogCache()
+			if err != nil {
+				log.Println("refreshing catalog")
+			}
+		}
+	}()
+}
 
 // NotificationHandler handles request on /service/notifications/, which listens to registry's events.
 type NotificationHandler struct {
@@ -65,7 +79,6 @@ func (n *NotificationHandler) Post() {
 				username = "anonymous"
 			}
 			//go dao.AccessLog(username, project, repo, action)
-			log.Println(project)
 
 			if action == "push" {
 				go persistPushEvent(e)
@@ -77,10 +90,7 @@ func (n *NotificationHandler) Post() {
 // persist push infomation
 func persistPushEvent(e models.Event) {
 	log.Printf("in gorotine\n")
-	err2 := svc_utils.RefreshCatalogCache()
-	if err2 != nil {
-		beego.Error("Error happens when refreshing cache:", err2)
-	}
+
 	var repository models.Repository
 	repository.Name = strings.Split(e.Target.Repository, "/")[1]
 	repository.ProjectName = strings.Split(e.Target.Repository, "/")[0]
