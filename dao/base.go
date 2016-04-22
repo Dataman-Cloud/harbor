@@ -65,7 +65,6 @@ func GenerateRandomString() (string, error) {
 //InitDB initializes the database
 func InitDB() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.SetMaxOpenConns("mysql", 10)
 
 	addr, port, username, password := dbConfig()
 	dbStr := username + ":" + password + "@tcp(" + addr + ":" + port + ")/registry"
@@ -94,6 +93,7 @@ func InitDB() {
 	if err != nil {
 		panic(err)
 	}
+	orm.SetMaxOpenConns("default", 10)
 }
 
 func UpgradeDB() {
