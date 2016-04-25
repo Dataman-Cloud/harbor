@@ -29,14 +29,21 @@ import (
 	"github.com/astaxie/beego"
 )
 
+var CatalogRefreshedNeeded bool
+
 func init() {
+	CatalogRefreshedNeeded = false
+
 	go func() {
 		ticker := time.NewTicker(time.Second * 5 * 60)
 		for _ = range ticker.C {
-			log.Println("refreshing catalog")
-			err := svc_utils.RefreshCatalogCache()
-			if err != nil {
+			if CatalogRefreshedNeeded {
 				log.Println("refreshing catalog")
+				err := svc_utils.RefreshCatalogCache()
+				if err != nil {
+					log.Println("refreshing catalog")
+				}
+				CatalogRefreshedNeeded = false
 			}
 		}
 	}()
@@ -91,6 +98,7 @@ func (n *NotificationHandler) Post() {
 func persistPushEvent(e models.Event) {
 	log.Printf("in gorotine\n")
 
+	CatalogRefreshedNeeded = true
 	var repository models.Repository
 	repository.Name = strings.Split(e.Target.Repository, "/")[1]
 	repository.ProjectName = strings.Split(e.Target.Repository, "/")[0]
