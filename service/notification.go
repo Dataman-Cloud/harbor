@@ -70,6 +70,7 @@ func (n *NotificationHandler) Post() {
 	var username, action, repo, project string
 	var matched bool
 	for _, e := range notification.Events {
+		beego.Error("event action: ", e.Action)
 		matched, err = regexp.MatchString(manifestPattern, e.Target.MediaType)
 		if err != nil {
 			beego.Error("Failed to match the media type against pattern, error: ", err)
