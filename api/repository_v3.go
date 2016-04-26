@@ -23,7 +23,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
+	//"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/vmware/harbor/compose"
@@ -292,7 +292,7 @@ func (ra *RepositoryV3API) UpdateRepository() {
 //
 // return list of repository categories, category are stored in /path/to/project/root/CATEGORIES
 func (ra *RepositoryV3API) GetCategories() {
-	b, err := ioutil.ReadFile("CATEGORIES")
+	/*b, err := ioutil.ReadFile("CATEGORIES")
 	if err != nil {
 		beego.Error("Ftailed to get CATEGORIES errors: ", err)
 		ra.RenderError(http.StatusInternalServerError, "Failed to get repo CATEGORIES")
@@ -309,6 +309,21 @@ func (ra *RepositoryV3API) GetCategories() {
 	categoriesResponse := models.CategoriesResponse{
 		Code: 0,
 		Data: categories,
+	}
+	ra.Data["json"] = categoriesResponse
+	ra.ServeJSON()*/
+	categories, err := dao.GetAllCategories()
+	if err != nil {
+		beego.Error("Failed to get categories from mysql error: ", err)
+		ra.CustomAbort(http.StatusInternalServerError, "Failed to get categories")
+	}
+	var cs []string
+	for _, c := range categories {
+		cs = append(cs, c.Name)
+	}
+	categoriesResponse := models.CategoriesResponse{
+		Code: 0,
+		Data: cs,
 	}
 	ra.Data["json"] = categoriesResponse
 	ra.ServeJSON()

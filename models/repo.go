@@ -88,3 +88,8 @@ type CategoriesResponse struct {
 	Code int64    `json:"code"`
 	Data []string `json:"data"`
 }
+
+type Categories struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+}
