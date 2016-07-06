@@ -79,7 +79,7 @@ func main() {
 
 	git.InitParam()
 	config := git.Pairs()
-	if config.Storemethod == "git" {
+	if config.StoreMethod == "git" {
 		modCatalogTimer()
 	}
 

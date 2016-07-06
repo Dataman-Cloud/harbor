@@ -97,7 +97,7 @@ func (ra *RepositoryV3API) GetRepository() {
 	}
 
 	config := git.Pairs()
-	if config.Storemethod == "git" {
+	if config.StoreMethod == "git" {
 		FetchRepoInfo(repository)
 	}
 
@@ -139,7 +139,7 @@ func (ra *RepositoryV3API) GetMineRepositories() {
 	}
 
 	config := git.Pairs()
-	if config.Storemethod == "git" {
+	if config.StoreMethod == "git" {
 		for i := 0; i < len(repositories); i++ {
 			FetchRepoInfo(&repositories[i])
 		}
@@ -158,7 +158,7 @@ func (ra *RepositoryV3API) GetRepositories() {
 	}
 
 	config := git.Pairs()
-	if config.Storemethod == "git" {
+	if config.StoreMethod == "git" {
 		for i := 0; i < len(repositories); i++ {
 			FetchRepoInfo(&repositories[i])
 		}
@@ -289,7 +289,7 @@ func readFile(path string) string {
 	contents, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Println(fmt.Sprintf("%s:%s", "file not exists:", path))
-		return nil
+		return ""
 	}
 	return string(contents)
 }

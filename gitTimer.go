@@ -10,13 +10,13 @@ import (
 
 func InitClient() *git.Client {
 	config := git.Pairs()
-	client, err := git.NewClient(config.Workspace, config.Project, config.Imagename, config.Gituri, config.Branch)
+	client, err := git.NewClient(config.Workspace, config.Project, config.ImageName, config.GitUrl, config.Branch)
 	if err != nil {
 		log.Error("the creation of git client failed")
 	}
 	err = client.Clone()
 	if err != nil {
-		log.Error(fmt.Sprintf("%s :%s", "git clone failed,git uri is", config.Gituri))
+		log.Error(fmt.Sprintf("%s :%s", "git clone failed,git uri is", config.GitUrl))
 	}
 	return client
 }

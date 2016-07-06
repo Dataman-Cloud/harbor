@@ -8,7 +8,7 @@ type Config struct {
 	Workspace   string
 	Project     string
 	ImageName   string
-	GitUrL      string
+	GitUrl      string
 	StoreMethod string
 	Branch      string
 }
@@ -27,7 +27,7 @@ func initConfig(workspace, project, imagename, gituri, storemethod, branch strin
 	config.Workspace = workspace
 	config.Project = project
 	config.ImageName = imagename
-	config.GitUrL = gituri
-	config.Storemethod = storemethod
+	config.GitUrl = gituri
+	config.StoreMethod = storemethod
 	config.Branch = branch
 }
