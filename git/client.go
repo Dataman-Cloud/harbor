@@ -53,7 +53,7 @@ func NewClient(workspace, project, name, uri, branch string) (*Client, error) {
 		Dir:    name,
 	}
 
-	if err := client.initRepo(fmt.Sprintf("%s\\%s", workspace, project)); err != nil {
+	if err := client.initRepo(path.Join(workspace, project)); err != nil {
 		return nil, err
 	}
 	return client, nil
@@ -113,7 +113,7 @@ func (client *Client) Clone() error {
 
 //pull the update info from remote branch
 func (client *Client) Pull() error {
-	cmd, err := gitCmd(fmt.Sprintf("%s\\%s", client.Path, client.Dir), "pull", "origin", client.Branch)
+	cmd, err := gitCmd(path.Join(client.Path, client.Dir), "pull", "origin", client.Branch)
 	if err != nil {
 		return err
 	}

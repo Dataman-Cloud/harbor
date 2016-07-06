@@ -23,6 +23,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -275,18 +276,20 @@ func (ra *RepositoryV3API) GetCategories() {
 //fetch catalog info from local files
 func FetchRepoInfo(repository *models.Repository) {
 	workspace := os.Getenv("workspace")
-	dir := fmt.Sprintf("%s\\%s", workspace, repository.Name)
-	repository.Category = readFile(fmt.Sprintf("%s\\%s", dir, "category"))
-	repository.Description = readFile(fmt.Sprintf("%s\\%s", dir, "description"))
-	repository.DockerCompose = readFile(fmt.Sprintf("%s\\%s", dir, "docker_compose.yml"))
-	repository.Readme = readFile(fmt.Sprintf("%s\\%s", dir, "README.md"))
-	repository.Catalog = readFile(fmt.Sprintf("%s\\%s", dir, "catalog.yml"))
-	repository.MarathonConfig = readFile(fmt.Sprintf("%s\\%s", dir, "marathon_config.yml"))
+	dir := path.Join(workspace, repository.Name)
+
+	repository.Category = readFile(path.Join(dir, "category"))
+	repository.Description = readFile(path.Join(dir, "description"))
+	repository.DockerCompose = readFile(path.Join(dir, "docker_compose.yml"))
+	repository.Readme = readFile(path.Join(dir, "README.md"))
+	repository.Catalog = readFile(path.Join(dir, "catalog.yml"))
+	repository.MarathonConfig = readFile(path.Join(dir, "marathon_config.yml"))
 }
 func readFile(path string) string {
-	contents, error := ioutil.ReadFile(path)
-	if error != nil {
+	contents, err := ioutil.ReadFile(path)
+	if err != nil {
 		log.Println(fmt.Sprintf("%s:%s", "file not exists:", path))
+		return nil
 	}
 	return string(contents)
 }
