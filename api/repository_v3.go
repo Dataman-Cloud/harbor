@@ -28,7 +28,6 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/vmware/harbor/dao"
-	"github.com/vmware/harbor/git"
 	"github.com/vmware/harbor/models"
 	"github.com/vmware/harbor/utils"
 )
@@ -96,8 +95,7 @@ func (ra *RepositoryV3API) GetRepository() {
 		return
 	}
 
-	config := git.Pairs()
-	if config.StoreMethod == "git" {
+	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
 		FetchRepoInfo(repository)
 	}
 
@@ -138,8 +136,7 @@ func (ra *RepositoryV3API) GetMineRepositories() {
 		return
 	}
 
-	config := git.Pairs()
-	if config.StoreMethod == "git" {
+	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
 		for i := 0; i < len(repositories); i++ {
 			FetchRepoInfo(&repositories[i])
 		}
@@ -157,8 +154,7 @@ func (ra *RepositoryV3API) GetRepositories() {
 		ra.RenderError(http.StatusInternalServerError, "Failed to get repositories")
 	}
 
-	config := git.Pairs()
-	if config.StoreMethod == "git" {
+	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
 		for i := 0; i < len(repositories); i++ {
 			FetchRepoInfo(&repositories[i])
 		}
@@ -275,7 +271,7 @@ func (ra *RepositoryV3API) GetCategories() {
 
 //fetch catalog info from local files
 func FetchRepoInfo(repository *models.Repository) {
-	workspace := os.Getenv("workspace")
+	workspace := os.Getenv("HARBOR_CATA_WORKSPACE")
 	dir := path.Join(workspace, repository.Name)
 
 	repository.Category = readFile(path.Join(dir, "category"))

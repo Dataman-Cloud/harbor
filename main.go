@@ -24,7 +24,6 @@ import (
 	_ "github.com/astaxie/beego/session/redis"
 	_ "github.com/vmware/harbor/auth/db"
 	"github.com/vmware/harbor/dao"
-	"github.com/vmware/harbor/git"
 	"github.com/vmware/harbor/models"
 	_ "github.com/vmware/harbor/routers"
 )
@@ -77,9 +76,7 @@ func main() {
 	dao.UpgradeDB()
 	updateInitPassword(adminUserID, os.Getenv("HARBOR_ADMIN_PASSWORD"))
 
-	git.InitParam()
-	config := git.Pairs()
-	if config.StoreMethod == "git" {
+	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
 		modCatalogTimer()
 	}
 

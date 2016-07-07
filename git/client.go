@@ -68,7 +68,7 @@ func (client *Client) String() string {
 //initRepo init empty repo
 func (client *Client) initRepo(workspace string) error {
 	if len(workspace) == 0 {
-		workspace = "/var/lib/drone/workspace/"
+		workspace = "/var/lib/harbor/workspace/"
 	}
 	if !filepath.IsAbs(workspace) {
 		log.Errorln("bad workspace", workspace)

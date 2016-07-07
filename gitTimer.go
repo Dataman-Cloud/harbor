@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -9,14 +10,13 @@ import (
 )
 
 func InitClient() *git.Client {
-	config := git.Pairs()
-	client, err := git.NewClient(config.Workspace, config.Project, config.ImageName, config.GitUrl, config.Branch)
+	client, err := git.NewClient(os.Getenv("HARBOR_CATA_WORKSPACE"), os.Getenv("HARBOR_CATA_PROJECT"), os.Getenv("HARBOR_CATA_IMAGENAME"), os.Getenv("HARBOR_CATA_GITURL"), os.Getenv("HARBOR_CATA_BRANCH"))
 	if err != nil {
 		log.Error("the creation of git client failed")
 	}
 	err = client.Clone()
 	if err != nil {
-		log.Error(fmt.Sprintf("%s :%s", "git clone failed,git uri is", config.GitUrl))
+		log.Error(fmt.Sprintf("%s :%s", "git clone failed,git uri is", os.Getenv("HARBOR_CATA_GITURL")))
 	}
 	return client
 }
