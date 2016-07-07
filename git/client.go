@@ -7,14 +7,11 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 )
 
 var (
-	//ErrNoRefs not found refs
-	ErrNoRefs = errors.New("no refs")
 	//ErrBadURI bad git uri
 	ErrBadURI = errors.New("bad uri")
 	//ErrBadName bad repo name
@@ -41,7 +38,7 @@ type Client struct {
 }
 
 //NewClient create new client
-func NewClient(workspace, uri, branch string) (*Client, error) {
+func NewClient(path, uri, branch string) (*Client, error) {
 	if len(uri) == 0 {
 		return nil, ErrBadURI
 	}
@@ -51,7 +48,7 @@ func NewClient(workspace, uri, branch string) (*Client, error) {
 		Branch: branch,
 	}
 
-	if err := client.initRepo(workspace); err != nil {
+	if err := client.initRepo(path); err != nil {
 		return nil, err
 	}
 	return client, nil
@@ -63,15 +60,14 @@ func (client *Client) String() string {
 }
 
 //initRepo init empty repo
-func (client *Client) initRepo(workspace string) error {
-	if len(workspace) == 0 {
-		workspace = "/var/lib/harbor/workspace/"
+func (client *Client) initRepo(path string) error {
+	if len(path) == 0 {
+		path = "/var/lib/harbor/workspace/"
 	}
-	if !filepath.IsAbs(workspace) {
-		log.Errorln("bad workspace", workspace)
+	if !filepath.IsAbs(path) {
+		log.Errorln("bad workspace", path)
 		return ErrBadWorkspace
 	}
-	path := workspace
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return err
 	}
@@ -133,15 +129,6 @@ func (client *Client) Pull() error {
 		return err
 	}
 	return nil
-}
-
-//update Client Catalog
-func (client *Client) updateCatalog() {
-	gitTimer := time.NewTicker(time.Second * 2)
-	for {
-		<-gitTimer.C
-		client.Pull()
-	}
 }
 
 // Trace writes each command to standard error (preceded by a ‘$ ’) before it

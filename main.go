@@ -61,7 +61,7 @@ func updateInitPassword(userID int, password string) error {
 	}
 	return nil
 }
-func modCatalogTimer() {
+func StartSyncingGitRepo() {
 	log.Println("start init git client and clone the uri")
 	client := InitClient()
 	log.Println("start git pull timer")
@@ -77,7 +77,7 @@ func main() {
 	updateInitPassword(adminUserID, os.Getenv("HARBOR_ADMIN_PASSWORD"))
 
 	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
-		modCatalogTimer()
+		StartSyncingGitRepo()
 	}
 
 	beego.Run()

@@ -275,7 +275,6 @@ func (ra *RepositoryV3API) GetCategories() {
 func FetchRepoInfo(repository *models.Repository) {
 	workspace := os.Getenv("HARBOR_CATA_WORKSPACE")
 	dir := path.Join(workspace, repository.Name)
-
 	repository.Category = readFile(path.Join(dir, "category"))
 	repository.Description = readFile(path.Join(dir, "description"))
 	repository.DockerCompose = readFile(path.Join(dir, "docker_compose.yml"))
