@@ -43,7 +43,7 @@ type Client struct {
 }
 
 //NewClient create new client
-func NewClient(workspace, project, name, uri, branch string) (*Client, error) {
+func NewClient(workspace, project, uri, branch string) (*Client, error) {
 	if len(uri) == 0 {
 		return nil, ErrBadURI
 	}
@@ -51,10 +51,10 @@ func NewClient(workspace, project, name, uri, branch string) (*Client, error) {
 	client := &Client{
 		URI:    uri,
 		Branch: branch,
-		Dir:    name,
+		Dir:    project,
 	}
 
-	if err := client.initRepo(path.Join(workspace, project)); err != nil {
+	if err := client.initRepo(workspace); err != nil {
 		return nil, err
 	}
 	return client, nil

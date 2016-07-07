@@ -10,7 +10,7 @@ import (
 )
 
 func InitClient() *git.Client {
-	client, err := git.NewClient(os.Getenv("HARBOR_CATA_WORKSPACE"), os.Getenv("HARBOR_CATA_PROJECT"), os.Getenv("HARBOR_CATA_IMAGENAME"), os.Getenv("HARBOR_CATA_GITURL"), os.Getenv("HARBOR_CATA_BRANCH"))
+	client, err := git.NewClient(os.Getenv("HARBOR_CATA_WORKSPACE"), os.Getenv("HARBOR_CATA_PROJECT"), os.Getenv("HARBOR_CATA_GITURL"), os.Getenv("HARBOR_CATA_BRANCH"))
 	if err != nil {
 		log.Error("the creation of git client failed")
 	}
