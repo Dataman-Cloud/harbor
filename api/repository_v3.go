@@ -116,7 +116,9 @@ func (ra *RepositoryV3API) GetRepository() {
 	log.Println("Questions: ", string(questionsJson))
 	repository.Questions = string(questionsJson)
 
-	repository.Readme = base64.StdEncoding.EncodeToString([]byte(repository.Readme))
+	if os.Getenv("HARBOR_CATA_STOREMETHOD") != "git" {
+		repository.Readme = base64.StdEncoding.EncodeToString([]byte(repository.Readme))
+	}
 
 	repositoryResponse := models.RepositoryResponse{
 		Code: 0,
