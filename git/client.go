@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -39,11 +38,10 @@ type Client struct {
 	URI    string
 	Branch string
 	Path   string
-	Dir    string
 }
 
 //NewClient create new client
-func NewClient(workspace, project, uri, branch string) (*Client, error) {
+func NewClient(workspace, uri, branch string) (*Client, error) {
 	if len(uri) == 0 {
 		return nil, ErrBadURI
 	}
@@ -51,7 +49,6 @@ func NewClient(workspace, project, uri, branch string) (*Client, error) {
 	client := &Client{
 		URI:    uri,
 		Branch: branch,
-		Dir:    project,
 	}
 
 	if err := client.initRepo(workspace); err != nil {
@@ -99,9 +96,22 @@ func gitCmd(path string, args ...string) (*exec.Cmd, error) {
 	return cmd, nil
 }
 
-//clone the repository
-func (client *Client) Clone() error {
-	cmd, err := gitCmd(client.Path, "clone", client.URI)
+//git init
+func (client *Client) Init() error {
+	cmd, err := gitCmd(client.Path, "init")
+	if err != nil {
+		return err
+	}
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//git remote add
+func (client *Client) RemoteAdd() error {
+	cmd, err := gitCmd(client.Path, "remote", "add", "origin", client.URI)
 	if err != nil {
 		return err
 	}
@@ -114,7 +124,7 @@ func (client *Client) Clone() error {
 
 //pull the update info from remote branch
 func (client *Client) Pull() error {
-	cmd, err := gitCmd(path.Join(client.Path, client.Dir), "pull", "origin", client.Branch)
+	cmd, err := gitCmd(client.Path, "pull", "origin", client.Branch)
 	if err != nil {
 		return err
 	}
@@ -137,5 +147,5 @@ func (client *Client) updateCatalog() {
 // Trace writes each command to standard error (preceded by a ‘$ ’) before it
 // is executed. Used for debugging your build.
 func trace(cmd *exec.Cmd) {
-	log.Infoln("$", cmd.Dir, strings.Join(cmd.Args, " "))
+	log.Infoln("$", cmd.Path, strings.Join(cmd.Args, " "))
 }
