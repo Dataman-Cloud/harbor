@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -22,7 +23,8 @@ func InitClient() *git.Client {
 	return client
 }
 func PullTimer(client *git.Client) {
-	timer := time.NewTicker(time.Second * 2)
+	timeinterval, _ := strconv.Atoi(os.Getenv("HARBOR_CATA_TIMEINTERVAL"))
+	timer := time.NewTicker(time.Second * time.Duration(timeinterval))
 	for {
 		<-timer.C
 		if err := client.Pull(); err != nil {
