@@ -63,9 +63,12 @@ func updateInitPassword(userID int, password string) error {
 }
 func StartSyncingGitRepo() {
 	log.Println("start init git client and clone the uri")
-	client := InitClient()
-	log.Println("start git pull timer")
-	go PullTimer(client)
+	client, err := InitClient()
+	if err == nil {
+		log.Println("start git pull timer")
+		go PullTimer(client)
+	}
+
 }
 func main() {
 	beego.BConfig.WebConfig.Session.SessionOn = true
@@ -76,7 +79,7 @@ func main() {
 	dao.UpgradeDB()
 	updateInitPassword(adminUserID, os.Getenv("HARBOR_ADMIN_PASSWORD"))
 
-	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
+	if os.Getenv("REPO_TYPE") == "git" {
 		StartSyncingGitRepo()
 	}
 

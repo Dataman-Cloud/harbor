@@ -131,6 +131,19 @@ func (client *Client) Pull() error {
 	return nil
 }
 
+//reset local content
+func (client *Client) Reset() error {
+	cmd, err := gitCmd(client.Path, "reset", "--hard", "HEAD")
+	if err != nil {
+		return err
+	}
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Trace writes each command to standard error (preceded by a ‘$ ’) before it
 // is executed. Used for debugging your build.
 func trace(cmd *exec.Cmd) {

@@ -95,7 +95,7 @@ func (ra *RepositoryV3API) GetRepository() {
 		return
 	}
 
-	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
+	if os.Getenv("REPO_TYPE") == "git" {
 		FetchRepoInfo(repository)
 	}
 
@@ -116,7 +116,7 @@ func (ra *RepositoryV3API) GetRepository() {
 	log.Println("Questions: ", string(questionsJson))
 	repository.Questions = string(questionsJson)
 
-	if os.Getenv("HARBOR_CATA_STOREMETHOD") != "git" {
+	if os.Getenv("REPO_TYPE") != "git" {
 		repository.Readme = base64.StdEncoding.EncodeToString([]byte(repository.Readme))
 	}
 
@@ -138,7 +138,7 @@ func (ra *RepositoryV3API) GetMineRepositories() {
 		return
 	}
 
-	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
+	if os.Getenv("REPO_TYPE") == "git" {
 		for i := 0; i < len(repositories); i++ {
 			FetchRepoInfo(&repositories[i])
 		}
@@ -156,7 +156,7 @@ func (ra *RepositoryV3API) GetRepositories() {
 		ra.RenderError(http.StatusInternalServerError, "Failed to get repositories")
 	}
 
-	if os.Getenv("HARBOR_CATA_STOREMETHOD") == "git" {
+	if os.Getenv("REPO_TYPE") == "git" {
 		for i := 0; i < len(repositories); i++ {
 			FetchRepoInfo(&repositories[i])
 		}
