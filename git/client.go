@@ -3,6 +3,7 @@ package git
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -28,6 +29,15 @@ var (
 	ErrBadFile = errors.New("bad file")
 	//ErrBadCommit invalid commit
 	ErrBadCommit = errors.New("bad commit")
+)
+
+const (
+	//GitSshWrapper GIT_SSH
+	GitSshWrapper = "git_ssh_wrapper"
+	//GitSshWrapperScript GIT_SSH script
+	GitSshWrapperScript = `#!/bin/sh
+
+ssh -i %s $1 $2`
 )
 
 //Client git client for executing git commands
@@ -72,6 +82,14 @@ func (client *Client) initRepo(path string) error {
 		return err
 	}
 	client.Path = path
+
+	wrapperpath := filepath.Join(path, GitSshWrapper)
+	wrapperScript := fmt.Sprintf(GitSshWrapperScript, os.Getenv("PK_PATH"))
+	err := ioutil.WriteFile(wrapperpath, []byte(wrapperScript), 0755)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -84,7 +102,7 @@ func gitCmd(path string, args ...string) (*exec.Cmd, error) {
 		return nil, ErrBadCmd
 	}
 
-	cmd := exec.Command("git", args...)
+	cmd := exec.Command("GIT_SSH=git_ssh_wrapper git", args...)
 	cmd.Dir = path
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
