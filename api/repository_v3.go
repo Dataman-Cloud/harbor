@@ -273,8 +273,7 @@ func (ra *RepositoryV3API) GetCategories() {
 
 //fetch catalog info from local files
 func FetchRepoInfo(repository *models.Repository) {
-	workspace := os.Getenv("/root/harborCatalog")
-	dir := path.Join(workspace, repository.Name)
+	dir := path.Join("/root/harborCatalog", repository.Name)
 	repository.Category = readFile(path.Join(dir, "category"))
 	repository.Description = readFile(path.Join(dir, "description"))
 	repository.DockerCompose = readFile(path.Join(dir, "docker_compose.yml"))
