@@ -66,7 +66,7 @@ type Repository struct {
 	MarathonConfig string    `json:"marathonConfig"`
 	Catalog        string    `json:"catalog"`
 	Questions      string    `json:"questions"`
-	Icon           string    `json:"icon"`
+	Icon           string    `json:"icon,omitempty"`
 	CreatedAt      time.Time `json:"createdAt"`
 	UpdatedAt      time.Time `json:"updatedAt"`
 }

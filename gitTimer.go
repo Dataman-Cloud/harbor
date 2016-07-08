@@ -29,11 +29,11 @@ func PullTimer(client *git.Client) {
 	timer := time.NewTicker(time.Second * time.Duration(timeinterval))
 	for {
 		<-timer.C
-		if err := client.Pull(); err != nil {
-			log.Error(fmt.Sprintf("%s:%s", "git pull failed,the uri is:", client.URI))
-		}
 		if err := client.Reset(); err != nil {
 			log.Error(fmt.Sprintf("%s:%s", "git reset failed,the uri is:", client.URI))
+		}
+		if err := client.Pull(); err != nil {
+			log.Error(fmt.Sprintf("%s:%s", "git pull failed,the uri is:", client.URI))
 		}
 	}
 }
