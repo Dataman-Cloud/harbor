@@ -102,10 +102,11 @@ func gitCmd(path string, args ...string) (*exec.Cmd, error) {
 		return nil, ErrBadCmd
 	}
 
-	cmd := exec.Command("GIT_SSH=git_ssh_wrapper git", args...)
+	cmd := exec.Command("git", args...)
 	cmd.Dir = path
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	cmd.Env = append(os.Environ(), "GIT_SSH="+filepath.Join(path, GitSshWrapper))
 	trace(cmd)
 	return cmd, nil
 }
