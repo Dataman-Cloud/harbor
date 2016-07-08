@@ -280,7 +280,7 @@ func FetchRepoInfo(repository *models.Repository) {
 	repository.Readme = readFile(path.Join(dir, "README.md"))
 	repository.Catalog = readFile(path.Join(dir, "catalog.yml"))
 	repository.MarathonConfig = readFile(path.Join(dir, "marathon_config.yml"))
-	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "api/v3/repositories", repository.Name, repository.Name, "png")
+	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "/api/v3/repositories", repository.Name, repository.Name, "png")
 	log.Println(fmt.Sprintf("%s:%s", "the icon path is", repository.Icon))
 }
 func readFile(path string) string {
