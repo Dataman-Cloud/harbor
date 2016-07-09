@@ -156,23 +156,21 @@ func (ra *RepositoryV3API) GetRepositories() {
 		ra.RenderError(http.StatusInternalServerError, "Failed to get repositories")
 	}
 
+	var repArry []models.Repository
 	if os.Getenv("REPO_TYPE") == "git" {
 		for i := len(repositories) - 1; i >= 0; i-- {
-			repo := repositories[i]
-			if result := isPublic(repo.Name); result == "1" {
-				log.Println(fmt.Sprintf("%s:%s:%s", "=========is public:", repo.Name, "======="))
+			if result := isPublic(repositories[i].Name); result == "1" {
+				beego.Info(fmt.Sprintf("%s:%s:%s", "=========is public:", repositories[i].Name, "======="))
 				FetchRepoInfo(&repositories[i])
-			} else {
-				log.Println(fmt.Sprintf("%s:%s:%s", "=========is not public:", repo.Name, "======="))
-				repositories = append(repositories[:i], repositories[i+1:]...)
+				repArry = append(repArry, repositories[i])
 			}
 		}
-		log.Println(fmt.Sprintf("%s:%s", "the length of repositories is", repositories))
+		beego.Info(fmt.Sprintf("%s:%s", "the length of repositories is", repositories))
 	}
 
 	repositoriesResponse := models.RepositoriesResponse{
 		Code: 0,
-		Data: repositories,
+		Data: repArry,
 	}
 	ra.Data["json"] = repositoriesResponse
 	ra.ServeJSON()
