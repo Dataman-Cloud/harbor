@@ -6,10 +6,13 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/astaxie/beego"
+	"github.com/vmware/harbor/models"
 )
 
 var (
@@ -167,4 +170,28 @@ func (client *Client) Reset() error {
 // is executed. Used for debugging your build.
 func trace(cmd *exec.Cmd) {
 	log.Infoln("$", cmd.Path, strings.Join(cmd.Args, " "))
+}
+
+//fetch catalog info from local files
+func FetchRepoInfo(repository *models.Repository) {
+	dir := path.Join("/go/bin/harborCatalog/library", repository.Name)
+
+	beego.Info(fmt.Sprintf("%s:%s", "the dir is ", dir))
+	repository.Category = readFile(path.Join(dir, "category"))
+	repository.Description = readFile(path.Join(dir, "description"))
+	repository.DockerCompose = readFile(path.Join(dir, "docker_compose.yml"))
+	repository.Readme = readFile(path.Join(dir, "README.md"))
+	repository.Catalog = readFile(path.Join(dir, "catalog.yml"))
+	repository.MarathonConfig = readFile(path.Join(dir, "marathon_config.yml"))
+	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "/api/v3/repositories", repository.Name, repository.Name, "png")
+	log.Println(fmt.Sprintf("%s:%s", "the icon path is", repository.Icon))
+}
+
+func readFile(path string) string {
+	contents, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Println(fmt.Sprintf("%s:%s", "file not exists:", path))
+		return ""
+	}
+	return string(contents)
 }

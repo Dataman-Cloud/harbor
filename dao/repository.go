@@ -16,14 +16,14 @@
 package dao
 
 import (
-	"github.com/vmware/harbor/models"
-
 	"errors"
 	"fmt"
 	"log"
 	"strings"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/vmware/harbor/git"
+	"github.com/vmware/harbor/models"
 )
 
 func AddOrUpdateRepository(repository *models.Repository) (*models.Repository, error) {
@@ -167,6 +167,7 @@ func GetRepositoryByName(repoName string) (*models.Repository, error) {
 	} else if count == 0 {
 		return nil, errors.New("repo not found")
 	} else {
+		git.FetchRepoInfo(&repositories[0])
 		return &repositories[0], nil
 	}
 }

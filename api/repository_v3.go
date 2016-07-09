@@ -28,6 +28,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/vmware/harbor/dao"
+	"github.com/vmware/harbor/git"
 	"github.com/vmware/harbor/models"
 	"github.com/vmware/harbor/utils"
 )
@@ -96,7 +97,7 @@ func (ra *RepositoryV3API) GetRepository() {
 	}
 
 	if os.Getenv("REPO_TYPE") == "git" {
-		FetchRepoInfo(repository)
+		git.FetchRepoInfo(repository)
 	}
 
 	catalog, err := utils.ParseQuestions(repository.Catalog)
@@ -140,7 +141,7 @@ func (ra *RepositoryV3API) GetMineRepositories() {
 
 	if os.Getenv("REPO_TYPE") == "git" {
 		for i := 0; i < len(repositories); i++ {
-			FetchRepoInfo(&repositories[i])
+			git.FetchRepoInfo(&repositories[i])
 		}
 	}
 
@@ -161,7 +162,7 @@ func (ra *RepositoryV3API) GetRepositories() {
 		for i := len(repositories) - 1; i >= 0; i-- {
 			result := isPublic(repositories[i].Name)
 			if strings.TrimSpace(result) == "1" {
-				FetchRepoInfo(&repositories[i])
+				git.FetchRepoInfo(&repositories[i])
 				repArry = append(repArry, repositories[i])
 			}
 		}
@@ -276,21 +277,6 @@ func (ra *RepositoryV3API) GetCategories() {
 	ra.ServeJSON()
 }
 
-//fetch catalog info from local files
-func FetchRepoInfo(repository *models.Repository) {
-	dir := path.Join("/go/bin/harborCatalog/library", repository.Name)
-
-	beego.Info(fmt.Sprintf("%s:%s", "the dir is ", dir))
-	repository.Category = readFile(path.Join(dir, "category"))
-	repository.Description = readFile(path.Join(dir, "description"))
-	repository.DockerCompose = readFile(path.Join(dir, "docker_compose.yml"))
-	repository.Readme = readFile(path.Join(dir, "README.md"))
-	repository.Catalog = readFile(path.Join(dir, "catalog.yml"))
-	repository.MarathonConfig = readFile(path.Join(dir, "marathon_config.yml"))
-	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "/api/v3/repositories", repository.Name, repository.Name, "png")
-	log.Println(fmt.Sprintf("%s:%s", "the icon path is", repository.Icon))
-}
-
 func isPublic(dir string) string {
 	contents, err := ioutil.ReadFile(path.Join("/go/bin/harborCatalog/library", dir, "ispublic"))
 	if err != nil {
@@ -298,15 +284,6 @@ func isPublic(dir string) string {
 		return ""
 	} else {
 		log.Println(fmt.Sprintf("%s:%s", "the contents is :", contents))
-	}
-	return string(contents)
-}
-
-func readFile(path string) string {
-	contents, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.Println(fmt.Sprintf("%s:%s", "file not exists:", path))
-		return ""
 	}
 	return string(contents)
 }
