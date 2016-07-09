@@ -160,8 +160,10 @@ func (ra *RepositoryV3API) GetRepositories() {
 		for i := len(repositories) - 1; i >= 0; i-- {
 			repo := repositories[i]
 			if result := isPublic(repo.Name); result == "1" {
+				log.Println(fmt.Sprintf("%s:%s:%s", "=========is public:", repo.Name, "======="))
 				FetchRepoInfo(&repositories[i])
 			} else {
+				log.Println(fmt.Sprintf("%s:%s:%s", "=========is not public:", repo.Name, "======="))
 				repositories = append(repositories[:i], repositories[i+1:]...)
 			}
 		}
