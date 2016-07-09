@@ -159,13 +159,12 @@ func (ra *RepositoryV3API) GetRepositories() {
 	var repArry []models.Repository
 	if os.Getenv("REPO_TYPE") == "git" {
 		for i := len(repositories) - 1; i >= 0; i-- {
-			if result := isPublic(repositories[i].Name); result == "1" {
-				beego.Info(fmt.Sprintf("%s:%s:%s", "=========is public:", repositories[i].Name, "======="))
+			result := isPublic(repositories[i].Name)
+			if strings.TrimSpace(result) == "1" {
 				FetchRepoInfo(&repositories[i])
 				repArry = append(repArry, repositories[i])
 			}
 		}
-		beego.Info(fmt.Sprintf("%s:%s", "the length of repositories is", repositories))
 	}
 
 	repositoriesResponse := models.RepositoriesResponse{
@@ -280,6 +279,8 @@ func (ra *RepositoryV3API) GetCategories() {
 //fetch catalog info from local files
 func FetchRepoInfo(repository *models.Repository) {
 	dir := path.Join("/go/bin/harborCatalog/library", repository.Name)
+
+	beego.Info(fmt.Sprintf("%s:%s", "the dir is ", dir))
 	repository.Category = readFile(path.Join(dir, "category"))
 	repository.Description = readFile(path.Join(dir, "description"))
 	repository.DockerCompose = readFile(path.Join(dir, "docker_compose.yml"))
@@ -293,8 +294,10 @@ func FetchRepoInfo(repository *models.Repository) {
 func isPublic(dir string) string {
 	contents, err := ioutil.ReadFile(path.Join("/go/bin/harborCatalog/library", dir, "ispublic"))
 	if err != nil {
-		log.Println(fmt.Sprintf("%s:%s", "file not exists:", dir))
+		log.Println(fmt.Sprintf("%s:%s", "file not exists:", path.Join("/go/bin/harborCatalog/library", dir, "ispublic")))
 		return ""
+	} else {
+		log.Println(fmt.Sprintf("%s:%s", "the contents is :", contents))
 	}
 	return string(contents)
 }

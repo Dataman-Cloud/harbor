@@ -78,10 +78,8 @@ func main() {
 	dao.InitDB()
 	dao.UpgradeDB()
 	updateInitPassword(adminUserID, os.Getenv("HARBOR_ADMIN_PASSWORD"))
-
 	if os.Getenv("REPO_TYPE") == "git" {
 		StartSyncingGitRepo()
 	}
-
 	beego.Run()
 }
