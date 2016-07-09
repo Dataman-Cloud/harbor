@@ -157,9 +157,15 @@ func (ra *RepositoryV3API) GetRepositories() {
 	}
 
 	if os.Getenv("REPO_TYPE") == "git" {
-		for i := 0; i < len(repositories); i++ {
-			FetchRepoInfo(&repositories[i])
+		for i := len(repositories) - 1; i >= 0; i-- {
+			repo := repositories[i]
+			if result := isPublic(repo.Name); result == "1" {
+				FetchRepoInfo(&repositories[i])
+			} else {
+				repositories = append(repositories[:i], repositories[i+1:]...)
+			}
 		}
+		log.Println(fmt.Sprintf("%s:%s", "the length of repositories is", repositories))
 	}
 
 	repositoriesResponse := models.RepositoriesResponse{
@@ -283,6 +289,16 @@ func FetchRepoInfo(repository *models.Repository) {
 	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "/api/v3/repositories", repository.Name, repository.Name, "png")
 	log.Println(fmt.Sprintf("%s:%s", "the icon path is", repository.Icon))
 }
+
+func isPublic(dir string) string {
+	contents, err := ioutil.ReadFile(path.Join("/go/bin/harborCatalog/library", dir, "ispublic"))
+	if err != nil {
+		log.Println(fmt.Sprintf("%s:%s", "file not exists:", dir))
+		return ""
+	}
+	return string(contents)
+}
+
 func readFile(path string) string {
 	contents, err := ioutil.ReadFile(path)
 	if err != nil {
