@@ -27,7 +27,7 @@ func init() {
 	beego.SetStaticPath("registry/static/i18n", "static/i18n")
 	beego.SetStaticPath("registry/static/resources", "static/resources")
 	beego.SetStaticPath("registry/static/vendors", "static/vendors")
-	beego.SetStaticPath("api/v3/repositories", "harborCatalog/library")
+	beego.SetStaticPath("api/v3/repositories/icons", "harborCatalog/library")
 
 	beego.Router("/login", &controllers.CommonController{}, "post:Login")
 	beego.Router("/logout", &controllers.CommonController{}, "get:Logout")
