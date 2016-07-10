@@ -95,11 +95,10 @@ func (ra *RepositoryV3API) GetRepository() {
 		ra.RenderError(http.StatusNotFound, "Failed to get repository")
 		return
 	}
-
 	if os.Getenv("REPO_TYPE") == "git" {
+		fmt.Println(repository)
 		git.FetchRepoInfo(repository)
 	}
-
 	catalog, err := utils.ParseQuestions(repository.Catalog)
 	if err != nil {
 		beego.Error("Sry Compose parse error", err)
