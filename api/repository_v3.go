@@ -116,9 +116,8 @@ func (ra *RepositoryV3API) GetRepository() {
 	log.Println("Questions: ", string(questionsJson))
 	repository.Questions = string(questionsJson)
 
-	if os.Getenv("REPO_TYPE") != "git" {
-		repository.Readme = base64.StdEncoding.EncodeToString([]byte(repository.Readme))
-	}
+	
+	repository.Readme = base64.StdEncoding.EncodeToString([]byte(repository.Readme))
 
 	repositoryResponse := models.RepositoryResponse{
 		Code: 0,
