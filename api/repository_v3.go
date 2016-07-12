@@ -116,7 +116,6 @@ func (ra *RepositoryV3API) GetRepository() {
 	log.Println("Questions: ", string(questionsJson))
 	repository.Questions = string(questionsJson)
 
-	
 	repository.Readme = base64.StdEncoding.EncodeToString([]byte(repository.Readme))
 
 	repositoryResponse := models.RepositoryResponse{
@@ -161,6 +160,12 @@ func (ra *RepositoryV3API) GetRepositories() {
 			result := isPublic(repositories[i].Name)
 			if strings.TrimSpace(result) == "1" {
 				git.FetchRepoInfo(&repositories[i])
+				repArry = append(repArry, repositories[i])
+			}
+		}
+	} else {
+		for i := len(repositories) - 1; i >= 0; i-- {
+			if repositories[i].IsPublic == 1 {
 				repArry = append(repArry, repositories[i])
 			}
 		}
@@ -278,7 +283,7 @@ func (ra *RepositoryV3API) GetCategories() {
 func isPublic(dir string) string {
 	contents, err := ioutil.ReadFile(path.Join("/go/bin/harborCatalog/library", dir, "ispublic"))
 	if err != nil {
-		log.Println(fmt.Sprintf("%s:%s", "file not exists:", path.Join("/go/bin/harborCatalog/library", dir, "ispublic")))
+		log.Println(fmt.Sprintf("%s:%s:%s", "read file happened error:", path.Join("/go/bin/harborCatalog/library", dir, "ispublic"), err))
 		return ""
 	} else {
 		log.Println(fmt.Sprintf("%s:%s", "the contents is :", contents))

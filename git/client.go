@@ -120,11 +120,7 @@ func (client *Client) Init() error {
 	if err != nil {
 		return err
 	}
-	err = cmd.Run()
-	if err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 //git remote add
@@ -133,11 +129,7 @@ func (client *Client) RemoteAdd() error {
 	if err != nil {
 		return err
 	}
-	err = cmd.Run()
-	if err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 //pull the update info from remote branch
@@ -146,11 +138,7 @@ func (client *Client) Pull() error {
 	if err != nil {
 		return err
 	}
-	err = cmd.Run()
-	if err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 //reset local content
@@ -159,11 +147,7 @@ func (client *Client) Reset() error {
 	if err != nil {
 		return err
 	}
-	err = cmd.Run()
-	if err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 // Trace writes each command to standard error (preceded by a ‘$ ’) before it
@@ -183,7 +167,7 @@ func FetchRepoInfo(repository *models.Repository) {
 	repository.Readme = readFile(path.Join(dir, "README.md"))
 	repository.Catalog = readFile(path.Join(dir, "catalog.yml"))
 	repository.MarathonConfig = readFile(path.Join(dir, "marathon_config.yml"))
-	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "/api/v3/repositories", repository.Name, repository.Name, "png")
+	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "/api/v3/repositories/icons", repository.Name, repository.Name, "png")
 	log.Println(fmt.Sprintf("%s:%s", "the icon path is", repository.Icon))
 }
 
