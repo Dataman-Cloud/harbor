@@ -17,7 +17,7 @@ func transPk() {
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	contents, _ := ioutil.ReadFile(path.Join(dir, "id_rsa"))
 	fmt.Println(fmt.Sprintf("%s:%s", "the contents is:", contents))
-	err := ioutil.WriteFile(path.Join(dir, "id_rsa"), contents, 0400)
+	err := ioutil.WriteFile("/go/bin/id_rsa", contents, 0400)
 	if err != nil {
 		log.Error("transfer primary key failed")
 	}
