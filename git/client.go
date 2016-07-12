@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/astaxie/beego"
 	"github.com/vmware/harbor/models"
 )
 
@@ -110,9 +109,6 @@ func gitCmd(path string, args ...string) (*exec.Cmd, error) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Env = append(os.Environ(), "GIT_SSH="+filepath.Join(path, GitSshWrapper))
-	log.Errorln("==========river==========")
-	log.Errorln(cmd)
-	log.Errorln("==========river==========")
 	trace(cmd)
 	return cmd, nil
 }
@@ -129,7 +125,6 @@ func (client *Client) Init() error {
 //git remote add
 func (client *Client) RemoteAdd() error {
 	cmd, err := gitCmd(client.Path, "remote", "add", "origin", client.URI)
-
 	if err != nil {
 		return err
 	}
@@ -163,7 +158,6 @@ func trace(cmd *exec.Cmd) {
 //fetch catalog info from local files
 func FetchRepoInfo(repository *models.Repository) {
 	dir := path.Join("/go/bin/harborCatalog/library", repository.Name)
-	beego.Info(fmt.Sprintf("%s:%s", "the dir is ", dir))
 	repository.Category = readFile(path.Join(dir, "category"))
 	repository.Description = readFile(path.Join(dir, "description"))
 	repository.DockerCompose = readFile(path.Join(dir, "docker_compose.yml"))
@@ -171,7 +165,6 @@ func FetchRepoInfo(repository *models.Repository) {
 	repository.Catalog = readFile(path.Join(dir, "catalog.yml"))
 	repository.MarathonConfig = readFile(path.Join(dir, "marathon_config.yml"))
 	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "/api/v3/repositories/icons", repository.Name, repository.Name, "png")
-	log.Println(fmt.Sprintf("%s:%s", "the icon path is", repository.Icon))
 }
 
 func readFile(path string) string {
