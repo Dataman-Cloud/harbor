@@ -40,7 +40,7 @@ const (
 	//GitSshWrapperScript GIT_SSH script
 	GitSshWrapperScript = `#!/bin/sh
 
-ssh -i %s $1 $2`
+ssh -i %s -o "StrictHostKeyChecking no" $1 $2`
 )
 
 //Client git client for executing git commands
@@ -126,6 +126,7 @@ func (client *Client) Init() error {
 //git remote add
 func (client *Client) RemoteAdd() error {
 	cmd, err := gitCmd(client.Path, "remote", "add", "origin", client.URI)
+
 	if err != nil {
 		return err
 	}
