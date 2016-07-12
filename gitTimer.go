@@ -24,7 +24,7 @@ func transPk() {
 }
 
 func InitClient() (*git.Client, error) {
-	transPk()
+
 	client, err := git.NewClient("/go/bin/harborCatalog", os.Getenv("HARBOR_CATA_GITURL"), "master")
 	if err != nil {
 		log.Error("the creation of git client failed")

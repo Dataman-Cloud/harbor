@@ -92,6 +92,7 @@ func (client *Client) initRepo(path string) error {
 	if err != nil {
 		return err
 	}
+	os.Chmod("/go/bin/primarykey/id_rsa", 0400)
 	return nil
 }
 
@@ -109,6 +110,9 @@ func gitCmd(path string, args ...string) (*exec.Cmd, error) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Env = append(os.Environ(), "GIT_SSH="+filepath.Join(path, GitSshWrapper))
+	log.Errorln("==========river==========")
+	log.Errorln(cmd)
+	log.Errorln("==========river==========")
 	trace(cmd)
 	return cmd, nil
 }
