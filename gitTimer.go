@@ -11,7 +11,7 @@ import (
 )
 
 func InitClient() (*git.Client, error) {
-	client, err := git.NewClient("/go/bin/harborCatalog/library", os.Getenv("HARBOR_CATA_GITURL"), "master")
+	client, err := git.NewClient("/go/bin/harborCatalog", os.Getenv("HARBOR_CATA_GITURL"), "master")
 	if err != nil {
 		log.Error("the creation of git client failed")
 		return nil, err

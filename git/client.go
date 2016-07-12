@@ -159,7 +159,6 @@ func trace(cmd *exec.Cmd) {
 //fetch catalog info from local files
 func FetchRepoInfo(repository *models.Repository) {
 	dir := path.Join("/go/bin/harborCatalog/library", repository.Name)
-
 	beego.Info(fmt.Sprintf("%s:%s", "the dir is ", dir))
 	repository.Category = readFile(path.Join(dir, "category"))
 	repository.Description = readFile(path.Join(dir, "description"))
