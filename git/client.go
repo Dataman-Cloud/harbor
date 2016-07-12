@@ -92,7 +92,6 @@ func (client *Client) initRepo(path string) error {
 	if err != nil {
 		return err
 	}
-	os.Chmod("/go/bin/id_rsa", 0400)
 	return nil
 }
 

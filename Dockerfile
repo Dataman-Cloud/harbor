@@ -25,7 +25,7 @@ ENV MYSQL_USR=root \
 COPY views /go/bin/views
 COPY static /go/bin/static
 COPY CATEGORIES /go/bin/CATEGORIES
-COPY id_rsa /go/bin/
+
 COPY ./Deploy/Omega/ui/ /etc/ui
 COPY ./sql/ /sql
 
