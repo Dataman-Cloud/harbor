@@ -92,7 +92,10 @@ func (client *Client) initRepo(path string) error {
 	if err != nil {
 		return err
 	}
-
+	fmt.Println("=================================")
+	os.Chmod(wrapperpath, 0400)
+	fmt.Println(wrapperpath)
+	fmt.Println("=================================")
 	return nil
 }
 
