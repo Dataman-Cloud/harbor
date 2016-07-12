@@ -93,7 +93,7 @@ func (client *Client) initRepo(path string) error {
 		return err
 	}
 	fmt.Println("=================================")
-	os.Chmod("/go/bin/rd_rsa", 0400)
+	os.Chmod("/go/bin/id_rsa", 0400)
 	fmt.Println(wrapperpath)
 	fmt.Println("=================================")
 	return nil
