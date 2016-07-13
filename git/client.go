@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/astaxie/beego"
 	"github.com/vmware/harbor/models"
 )
 
@@ -40,7 +39,7 @@ const (
 	//GitSshWrapperScript GIT_SSH script
 	GitSshWrapperScript = `#!/bin/sh
 
-ssh -i %s $1 $2`
+ssh -i %s -o "StrictHostKeyChecking no" $1 $2`
 )
 
 //Client git client for executing git commands
@@ -87,12 +86,12 @@ func (client *Client) initRepo(path string) error {
 	client.Path = path
 
 	wrapperpath := filepath.Join(path, GitSshWrapper)
-	wrapperScript := fmt.Sprintf(GitSshWrapperScript, os.Getenv("PK_PATH"))
+	wrapperScript := fmt.Sprintf(GitSshWrapperScript, "/go/bin/primarykey/id_rsa")
 	err := ioutil.WriteFile(wrapperpath, []byte(wrapperScript), 0755)
 	if err != nil {
 		return err
 	}
-
+	os.Chmod("/go/bin/primarykey/id_rsa", 0400)
 	return nil
 }
 
@@ -159,8 +158,6 @@ func trace(cmd *exec.Cmd) {
 //fetch catalog info from local files
 func FetchRepoInfo(repository *models.Repository) {
 	dir := path.Join("/go/bin/harborCatalog/library", repository.Name)
-
-	beego.Info(fmt.Sprintf("%s:%s", "the dir is ", dir))
 	repository.Category = readFile(path.Join(dir, "category"))
 	repository.Description = readFile(path.Join(dir, "description"))
 	repository.DockerCompose = readFile(path.Join(dir, "docker_compose.yml"))
@@ -168,7 +165,6 @@ func FetchRepoInfo(repository *models.Repository) {
 	repository.Catalog = readFile(path.Join(dir, "catalog.yml"))
 	repository.MarathonConfig = readFile(path.Join(dir, "marathon_config.yml"))
 	repository.Icon = fmt.Sprintf("%s/%s/%s.%s", "/api/v3/repositories/icons", repository.Name, repository.Name, "png")
-	log.Println(fmt.Sprintf("%s:%s", "the icon path is", repository.Icon))
 }
 
 func readFile(path string) string {

@@ -19,6 +19,13 @@ curl -v -X POST $MARATHON_API_URL/v2/apps -H Content-Type:application/json -d \
                                      "portMappings": [
                                              { "containerPort": 5005, "hostPort": 0, "protocol": "tcp"}
                                      ]
+                                     "volumes": [
+                                            {
+                                              "containerPath": "/go/bin/primarykey",
+                                              "hostPath": "/data/drone",
+                                              "mode": "RW"
+                                            }
+                                    ]
                                 }
                    },
       "env": {
@@ -30,4 +37,3 @@ curl -v -X POST $MARATHON_API_URL/v2/apps -H Content-Type:application/json -d \
                "'$CONFIGSERVER'/config/demo/config/registry/docker.tar.gz"
        ]
 }'
-
