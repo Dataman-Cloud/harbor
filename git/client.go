@@ -86,7 +86,7 @@ func (client *Client) initRepo(path string) error {
 	client.Path = path
 
 	wrapperpath := filepath.Join(path, GitSshWrapper)
-	wrapperScript := fmt.Sprintf(GitSshWrapperScript, os.Getenv("PK_PATH"))
+	wrapperScript := fmt.Sprintf(GitSshWrapperScript, "/go/bin/primarykey/id_rsa")
 	err := ioutil.WriteFile(wrapperpath, []byte(wrapperScript), 0755)
 	if err != nil {
 		return err
