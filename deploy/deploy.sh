@@ -17,7 +17,7 @@ curl -v -X PUT $MARATHON_API_URL/v2/apps/shurenyun-$TASKENV-$SERVICE -H Content-
                                      "forcePullImage": '$FORCEPULLIMAGE',
                                      "privileged": '$PRIVILEGED',
                                      "portMappings": [
-                                             { "containerPort": 5005, "hostPort": 0, "protocol": "tcp"}
+                                             { "containerPort": 80, "hostPort": 0, "protocol": "tcp"}
                                      ]
                                      "volumes": [
                                             {
