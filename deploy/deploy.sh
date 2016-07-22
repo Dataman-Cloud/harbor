@@ -19,13 +19,6 @@ curl -v -X PUT $MARATHON_API_URL/v2/apps/shurenyun-$TASKENV-$SERVICE -H Content-
                                      "portMappings": [
                                              { "containerPort": 80, "hostPort": 0, "protocol": "tcp"}
                                      ]
-                                     "volumes": [
-                                            {
-                                              "containerPath": "/go/bin/primarykey",
-                                              "hostPath": "/data/drone",
-                                              "mode": "RW"
-                                            }
-                                    ]
                                 }
                    },
       "env": {
