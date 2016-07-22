@@ -41,7 +41,7 @@ func init() {
 
 // RefreshCatalogCache calls registry's API to get repository list and write it to cache.
 func RefreshCatalogCache() error {
-	result, err := RegistryAPIGet(BuildRegistryURL("_catalog"), "")
+	result, err := RegistryAPIGet(BuildRegistryURL("_catalog?n=1000"), "")
 	if err != nil {
 		return err
 	}
