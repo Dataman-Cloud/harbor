@@ -8,12 +8,12 @@ create table access (
 );
 
 insert into access values 
-( null, 'A', 'All access for the system'),
-( null, 'M', 'Management access for project'),
-( null, 'R', 'Read access for project'),
-( null, 'W', 'Write access for project'),
-( null, 'D', 'Delete access for project'),
-( null, 'S', 'Search access for project');
+( 1, 'A', 'All access for the system'),
+( 2, 'M', 'Management access for project'),
+( 3, 'R', 'Read access for project'),
+( 4, 'W', 'Write access for project'),
+( 5, 'D', 'Delete access for project'),
+( 6, 'S', 'Search access for project');
 
 
 create table role (
@@ -24,10 +24,10 @@ create table role (
 );
 
 insert into role values 
-( null, 'AMDRWS', 'sysAdmin'),
-( null, 'MDRWS', 'projectAdmin'),
-( null, 'RWS', 'developer'),
-( null, 'RS', 'guest');
+( 1, 'AMDRWS', 'sysAdmin'),
+( 2, 'MDRWS', 'projectAdmin'),
+( 3, 'RWS', 'developer'),
+( 4, 'RS', 'guest');
 
 
 create table user (
@@ -62,7 +62,7 @@ create table project (
 );
 
 insert into project values 
-(null, 1, 'library', NOW(), 0, 1);
+(1, 1, 'library', NOW(), 0, 1);
 
 create table project_role (
  pr_id int NOT NULL AUTO_INCREMENT,
