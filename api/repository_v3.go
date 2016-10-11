@@ -22,10 +22,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"path"
 	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/vmware/harbor/dao"
+	"github.com/vmware/harbor/git"
 	"github.com/vmware/harbor/models"
 	"github.com/vmware/harbor/utils"
 )
@@ -92,7 +95,10 @@ func (ra *RepositoryV3API) GetRepository() {
 		ra.RenderError(http.StatusNotFound, "Failed to get repository")
 		return
 	}
-
+	if os.Getenv("REPO_TYPE") == "git" {
+		fmt.Println(repository)
+		git.FetchRepoInfo(repository)
+	}
 	catalog, err := utils.ParseQuestions(repository.Catalog)
 	if err != nil {
 		beego.Error("Sry Compose parse error", err)
@@ -129,6 +135,13 @@ func (ra *RepositoryV3API) GetMineRepositories() {
 		ra.RenderError(http.StatusInternalServerError, "Failed to get repositories")
 		return
 	}
+
+	if os.Getenv("REPO_TYPE") == "git" {
+		for i := 0; i < len(repositories); i++ {
+			git.FetchRepoInfo(&repositories[i])
+		}
+	}
+
 	ra.Data["json"] = repositories
 	ra.ServeJSON()
 }
@@ -140,9 +153,27 @@ func (ra *RepositoryV3API) GetRepositories() {
 		beego.Error("Failed to get repositories from DB: ", err)
 		ra.RenderError(http.StatusInternalServerError, "Failed to get repositories")
 	}
+
+	var repArry []models.Repository
+	if os.Getenv("REPO_TYPE") == "git" {
+		for i := len(repositories) - 1; i >= 0; i-- {
+			result := isPublic(repositories[i].Name)
+			if strings.TrimSpace(result) == "1" {
+				git.FetchRepoInfo(&repositories[i])
+				repArry = append(repArry, repositories[i])
+			}
+		}
+	} else {
+		for i := len(repositories) - 1; i >= 0; i-- {
+			if repositories[i].IsPublic == 1 {
+				repArry = append(repArry, repositories[i])
+			}
+		}
+	}
+
 	repositoriesResponse := models.RepositoriesResponse{
 		Code: 0,
-		Data: repositories,
+		Data: repArry,
 	}
 	ra.Data["json"] = repositoriesResponse
 	ra.ServeJSON()
@@ -247,4 +278,15 @@ func (ra *RepositoryV3API) GetCategories() {
 	}
 	ra.Data["json"] = categoriesResponse
 	ra.ServeJSON()
+}
+
+func isPublic(dir string) string {
+	contents, err := ioutil.ReadFile(path.Join("/go/bin/harborCatalog/library", dir, "ispublic"))
+	if err != nil {
+		log.Println(fmt.Sprintf("%s:%s:%s", "read file happened error:", path.Join("/go/bin/harborCatalog/library", dir, "ispublic"), err))
+		return ""
+	} else {
+		log.Println(fmt.Sprintf("%s:%s", "the contents is :", contents))
+	}
+	return string(contents)
 }

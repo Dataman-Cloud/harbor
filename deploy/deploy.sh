@@ -2,7 +2,7 @@
 
 PRIVILEGED=false
 
-curl -v -X POST $MARATHON_API_URL/v2/apps -H Content-Type:application/json -d \
+curl -v -X PUT $MARATHON_API_URL/v2/apps/shurenyun-$TASKENV-$SERVICE -H Content-Type:application/json -d \
 '{
       "id": "shurenyun-'$TASKENV'-'$SERVICE'",
       "cpus": '$CPUS',
@@ -17,10 +17,26 @@ curl -v -X POST $MARATHON_API_URL/v2/apps -H Content-Type:application/json -d \
                                      "forcePullImage": '$FORCEPULLIMAGE',
                                      "privileged": '$PRIVILEGED',
                                      "portMappings": [
-                                             { "containerPort": 5005, "hostPort": 0, "protocol": "tcp"}
+                                             { "containerPort": 80, "hostPort": 0, "protocol": "tcp"}
                                      ]
+                                     "volumes": [
+                                            {
+                                              "containerPath": "/go/bin/primarykey",
+                                              "hostPath": "/data/drone",
+                                              "mode": "RW"
+                                            }
+                                    ]
                                 }
                    },
+      "healthChecks": [{
+               "path": "/api/v3/health/harbor",
+               "protocol": "HTTP",
+               "gracePeriodSeconds": 300,
+               "intervalSeconds": 60,
+               "portIndex": 0,
+               "timeoutSeconds": 20,
+               "maxConsecutiveFailures": 3
+           }],
       "env": {
                     "BAMBOO_PUBLIC": "true",
                     "BAMBOO_PROXY":"true",
@@ -30,4 +46,3 @@ curl -v -X POST $MARATHON_API_URL/v2/apps -H Content-Type:application/json -d \
                "'$CONFIGSERVER'/config/demo/config/registry/docker.tar.gz"
        ]
 }'
-

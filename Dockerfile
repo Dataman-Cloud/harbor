@@ -36,4 +36,3 @@ WORKDIR /go/bin/
 ENTRYPOINT ["/go/bin/harbor"]
 
 EXPOSE 5005
-

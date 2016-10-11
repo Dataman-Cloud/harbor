@@ -16,14 +16,14 @@
 package dao
 
 import (
-	"github.com/vmware/harbor/models"
-
 	"errors"
 	"fmt"
 	"log"
 	"strings"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/vmware/harbor/git"
+	"github.com/vmware/harbor/models"
 )
 
 func AddOrUpdateRepository(repository *models.Repository) (*models.Repository, error) {
@@ -107,7 +107,7 @@ func RepositoriesUnderNamespace(namespace string) ([]models.Repository, error) {
 	}
 
 	o := orm.NewOrm()
-	sql := `SELECT id, name, description, project_id,  project_name, category, is_public, user_name, latest_tag, created_at, updated_at, readme, docker_compose, catalog, marathon_config FROM repository WHERE is_public = 1 and project_name=?  ORDER BY updated_at DESC`
+	sql := `SELECT id, name, description, project_id,  project_name, category, is_public, user_name, latest_tag, created_at, updated_at, readme, docker_compose, catalog, marathon_config FROM repository WHERE  project_name=?  ORDER BY updated_at DESC`
 
 	var r []models.Repository
 	_, err := o.Raw(sql, namespace).QueryRows(&r)
@@ -167,6 +167,7 @@ func GetRepositoryByName(repoName string) (*models.Repository, error) {
 	} else if count == 0 {
 		return nil, errors.New("repo not found")
 	} else {
+		git.FetchRepoInfo(&repositories[0])
 		return &repositories[0], nil
 	}
 }
